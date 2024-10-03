@@ -1,4 +1,5 @@
 import streamlit as st
+import sklearn
 
 # About Us page
 st.markdown(

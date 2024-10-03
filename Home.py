@@ -1,4 +1,5 @@
 import streamlit as st
+import sklearn
 
 st.html(
     "<div style='display: flex; text-align: center; flex-direction: column'>"
