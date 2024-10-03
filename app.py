@@ -543,7 +543,7 @@ for feature_name, options in mapping_json.items():
         reformatted = ', '.join(value.split(';'))
         all_options.append(reformatted)
 
-    selected_country = st.selectbox(f'{featureNameChange(feature_name)}', list(all_options))    
+    selected_country = st.selectbox(f'{featureNameChange(feature_name)}', list(options.values()))    
     
     # take the key of the selected value
     selected_key = list(options.keys())[list(options.values()).index(selected_country)]
