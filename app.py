@@ -508,48 +508,52 @@ features = []
 for feature_name, options in mapping_json.items():
     # select options for each topic values
     def featureNameChange(feature_name):
-        if feature_name=="Country":
+        if feature_name == "Country":
             return "Country"
-        if feature_name=="OpSysProfessional use":
+        if feature_name == "OpSysProfessional use":
             return "Operating Systems used"
-        if feature_name=="ProfessionalTech":
+        if feature_name == "ProfessionalTech":
             return "Professional Technologies used"
-        if feature_name=="DevType":
+        if feature_name == "DevType":
             return "Developer Type"
-        if feature_name=="Industry":
+        if feature_name == "Industry":
             return "Industry"
-        if feature_name=="EdLevel":
+        if feature_name == "EdLevel":
             return "Education Level"
-        if feature_name=="Age":
+        if feature_name == "Age":
             return "Your Age"
-        if feature_name=="LanguageHaveWorkedWith":
+        if feature_name == "LanguageHaveWorkedWith":
             return "Programming Languages Worked With"
-        if feature_name=="RemoteWork":
+        if feature_name == "RemoteWork":
             return "Work Type"
-        if feature_name=="Employment":
+        if feature_name == "Employment":
             return "Employment Status"
-        if feature_name=="ToolsTechHaveWorkedWith":
+        if feature_name == "ToolsTechHaveWorkedWith":
             return "Tools and Technologies Worked With"
-        if feature_name=="DatabaseHaveWorkedWith":
+        if feature_name == "DatabaseHaveWorkedWith":
             return "Databases Worked With"
-        if feature_name=="WebframeHaveWorkedWith":
+        if feature_name == "WebframeHaveWorkedWith":
             return "Web Frameworks Worked With"
 
-    # options for each topic values
     all_options = []
+    original_mapping = {} 
 
-    for value in options.values():
-        # Split by ';', then rejoin with ','
+
+    for key, value in options.items():
+        # aplit and rejoin
         reformatted = ', '.join(value.split(';'))
-        all_options.append(reformatted)
+        all_options.append(reformatted) 
+        original_mapping[reformatted] = key  
 
-    selected_country = st.selectbox(f'{featureNameChange(feature_name)}', list(options.values()))    
-    
-    # take the key of the selected value
-    selected_key = list(options.keys())[list(options.values()).index(selected_country)]
-    
-    # add the key to the list
-    features.append(int(selected_key)) 
+    # display options
+    selected_reformatted = st.selectbox(f'{featureNameChange(feature_name)}', list(all_options))
+
+    # mapping the relavant key
+    selected_key = original_mapping[selected_reformatted]
+
+    # add the key
+    features.append(int(selected_key))
+
 
 # numerical inputs
 years_code_pro = st.number_input('Years of Professional Coding Experience (1-28)', min_value=1, max_value=28)
