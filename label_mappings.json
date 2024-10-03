@@ -69,7 +69,14 @@
         "40": "school or academic work"
     },
     "EdLevel": {
-        "0": "Less than a Bachelors"
+        "0": "Associate degree",
+        "1": "Bachelor\u2019s degree",
+        "2": "Less than a Bachelors",
+        "3": "Master\u2019s degree",
+        "4": "Primary/elementary school",
+        "5": "Professional degree",
+        "6": "Secondary school",
+        "7": "Some college/university study without earning a degree"
     },
     "LearnCode": {
         "0": "Other",

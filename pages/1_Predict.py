@@ -1,4 +1,19 @@
-{
+import streamlit as st
+import pickle
+import numpy as np
+
+# load the saved model
+with open('./best__model.pkl', 'rb') as file:
+    best_model = pickle.load(file)
+
+
+def yearsCodeProEncoder(x):
+    return (x - 1) / 27
+
+def workExpEncoder(x):
+    return x / 30
+
+mapping_json = {
     "Country": {
     "0": "australia",
     "1": "brazil",
@@ -199,7 +214,14 @@
     },
 
     "EdLevel": {
-        "0": "Less than a Bachelors"
+        "0": "Associate degree",
+        "1": "Bachelor\u2019s degree",
+        "2": "Less than a Bachelors",
+        "3": "Master\u2019s degree",
+        "4": "Primary/elementary school",
+        "5": "Professional degree",
+        "6": "Secondary school",
+        "7": "Some college/university study without earning a degree"
     },
 
     "Age": {
@@ -482,3 +504,80 @@
         "65": "wordpress"
     }
 }
+
+st.markdown('<h1 style="color: blue; text-align: center;">Let us Predict</h1>', unsafe_allow_html=True)
+st.markdown('<p style="color: red; text-align: center;">Enter the following details for prediction &#128071;</p>', unsafe_allow_html=True)
+st.markdown('<p style="color: red; text-align: center;">For options, Please select the best answer suits you!</p>', unsafe_allow_html=True)
+
+# model input
+features = []
+
+# loop mapping JSON
+for feature_name, options in mapping_json.items():
+    # select options for each topic values
+    def featureNameChange(feature_name):
+        if feature_name == "Country":
+            return "Country"
+        if feature_name == "OpSysProfessional use":
+            return "Operating Systems used"
+        if feature_name == "ProfessionalTech":
+            return "Professional Technologies used"
+        if feature_name == "DevType":
+            return "Developer Type"
+        if feature_name == "Industry":
+            return "Industry"
+        if feature_name == "EdLevel":
+            return "Education Level"
+        if feature_name == "Age":
+            return "Your Age"
+        if feature_name == "LanguageHaveWorkedWith":
+            return "Programming Languages Worked With"
+        if feature_name == "RemoteWork":
+            return "Work Type"
+        if feature_name == "Employment":
+            return "Employment Status"
+        if feature_name == "ToolsTechHaveWorkedWith":
+            return "Tools and Technologies Worked With"
+        if feature_name == "DatabaseHaveWorkedWith":
+            return "Databases Worked With"
+        if feature_name == "WebframeHaveWorkedWith":
+            return "Web Frameworks Worked With"
+
+    all_options = []
+    original_mapping = {} 
+
+
+    for key, value in options.items():
+        # aplit and rejoin
+        reformatted = ', '.join(value.split(';'))
+        all_options.append(reformatted) 
+        original_mapping[reformatted] = key  
+
+    # display options
+    selected_reformatted = st.selectbox(f'{featureNameChange(feature_name)}', list(all_options))
+
+    # mapping the relavant key
+    selected_key = original_mapping[selected_reformatted]
+
+    # add the key
+    features.append(int(selected_key))
+
+
+# numerical inputs
+years_code_pro = st.number_input('Years of Professional Coding Experience (1-28)', min_value=1, max_value=28)
+work_experience = st.number_input('Years of Work Experience (0-30)', min_value=0, max_value=30)
+
+# encode the values
+encoded_years_code_pro = yearsCodeProEncoder(years_code_pro)
+encoded_work_experience = workExpEncoder(work_experience)
+
+# add encoded
+features.append(encoded_years_code_pro)
+features.append(encoded_work_experience)
+
+# ready to predict
+features = np.array([features])
+
+if st.button('Predict', type="primary"):
+    prediction = best_model.predict(features)
+    st.success(f"You are eligible for: {prediction[0]} USD")
